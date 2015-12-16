@@ -1,0 +1,37 @@
+---
+title: "CARS_MATH3710"
+author: "Cody Frisby"
+date: "December 15, 2015"
+output: 
+  html_document: 
+    keep_md: yes
+---
+Let's get started with R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
+
+```{r}
+minutes <- c(23,29,49,64,74,87,96,97,109,119,149,145,154,166, NA)
+units <- c(1,2,3,4,4,5,6,6,7,8,9,9,10,10,3)
+repair <- as.data.frame(cbind(minutes, units))
+head(repair)
+summary(repair)
+```
+
+Above is a summary of the data table "repair".
+Now let's plot the data look at the variable minutes being modeled as a function of units.
+
+```{r}
+attach(repair) #attaching the data makes our code below simpler.
+plot(units, minutes, bg = "lightblue", 
+     col = "black", cex = 1.1, pch = 21,frame = FALSE)
+abline(lm(minutes ~ units, data = repair), lwd = 2)
+cor(repair, use = "complete.obs")[2]
+fit <- lm(minutes ~ units, data = repair)
+summary(fit)
+hist(residuals(fit), col = "green", freq = FALSE)
+```
+
+Below is a plot of the residuals
+```{r}
+par(mfrow=c(2,2)) #setup your window to fit the next plots
+plot(fit)
+```
