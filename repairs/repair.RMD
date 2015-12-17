@@ -17,21 +17,43 @@ summary(repair)
 ```
 
 Above is a summary of the data table "repair".
-Now let's plot the data look at the variable minutes being modeled as a function of units.
 
 ```{r}
-attach(repair) #attaching the data makes our code below simpler.
-plot(units, minutes, bg = "lightblue", 
-     col = "black", cex = 1.1, pch = 21,frame = FALSE)
-abline(lm(minutes ~ units, data = repair), lwd = 2)
-cor(repair, use = "complete.obs")[2]
-fit <- lm(minutes ~ units, data = repair)
-summary(fit)
-hist(residuals(fit), col = "green", freq = FALSE)
+cor(repair, method = "pearson", use = "complete.obs")
+m <- lm(minutes ~ units, data = repair)
+summary(m)
 ```
 
-Below is a plot of the residuals
+Now let's plot the data look at the variable minutes being modeled as a function of units.
+
+```{r, echo=FALSE}
+plot(minutes ~ units, data=repair, bg = "lightblue", 
+     col = "black", cex = 1.5, pch = 21)
+#fit the least squares line to the plot.
+abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
+m <- lm(minutes ~ units, data = repair)
+summary(m)
+#to display the R^2 value on the graph
+legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+```
+
+
+```{r}
+#how to add confidence interval bands to the plot
+plot(minutes ~ units, data=repair, bg = "lightblue", 
+     col = "black", cex = 1.1, pch = 21)
+legend("topleft", bty = "n", legend = paste("R2 is", format(summary(m)$adj.r.squared, digits = 4)))
+wx <- par("usr")[1:2]
+new.x <- seq(wx[1], wx[2], len = 100)
+pred <- predict(m, new = data.frame(x=new.x), interval = "conf")
+lines(new.x, pred[,"fit"], lwd = 2)
+lines(new.x, pred[,"lwr"], lty = 4)
+lines(new.x, pred[,"upr"], lty = 4)
+```
+
+Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Residuals vs Leverage.
+
 ```{r}
 par(mfrow=c(2,2)) #setup your window to fit the next plots
-plot(fit)
+plot(m)
 ```
