@@ -1,108 +1,65 @@
-# CARS_MATH3710
+# Repairs
 Cody Frisby  
 December 15, 2015  
 
-Let's get started with R.  This first data set is small so we have the data loaded into two variable: minutes and units.  We then put them together witht the cbind function and store the result in a new variable called repair. 
+
+
+Let's get started with R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
 
 
 ```r
-minutes <- c(23,29,49,64,74,87,96,97,109,119,149,145,154,166, NA)
 units <- c(1,2,3,4,4,5,6,6,7,8,9,9,10,10,3)
-repair <- as.data.frame(cbind(minutes, units))
+minutes <- c(23,29,49,64,74,87,96,97,109,119,149,145,154,166, NA)
+repair <- as.data.frame(cbind(units, minutes))
 head(repair)
 ```
 
 ```
-##   minutes units
-## 1      23     1
-## 2      29     2
-## 3      49     3
-## 4      64     4
-## 5      74     4
-## 6      87     5
+##   units minutes
+## 1     1      23
+## 2     2      29
+## 3     3      49
+## 4     4      64
+## 5     4      74
+## 6     5      87
 ```
 
 ```r
-summary(repair)
+describe(repair)
 ```
 
 ```
-##     minutes           units     
-##  Min.   : 23.00   Min.   : 1.0  
-##  1st Qu.: 66.50   1st Qu.: 3.5  
-##  Median : 96.50   Median : 6.0  
-##  Mean   : 97.21   Mean   : 5.8  
-##  3rd Qu.:138.50   3rd Qu.: 8.5  
-##  Max.   :166.00   Max.   :10.0  
-##  NA's   :1
+##         vars  n  mean    sd median trimmed   mad min max range  skew
+## units      1 15  5.80  2.96    6.0    5.85  4.45   1  10     9  0.01
+## minutes    2 14 97.21 46.22   96.5   97.67 59.30  23 166   143 -0.09
+##         kurtosis    se
+## units      -1.48  0.76
+## minutes    -1.37 12.35
 ```
 
 Above is a summary of the data table "repair".
+
+
+```r
+cor(repair, method = "pearson", use = "complete.obs")
+```
+
+```
+##             units   minutes
+## units   1.0000000 0.9936987
+## minutes 0.9936987 1.0000000
+```
+
 Now let's plot the data look at the variable minutes being modeled as a function of units.
 
+![](repair_files/figure-html/unnamed-chunk-4-1.png) 
 
-```r
-attach(repair) #attaching the data makes our code below simpler.
-```
-
-```
-## The following objects are masked _by_ .GlobalEnv:
-## 
-##     minutes, units
-```
-
-```r
-plot(units, minutes, pch = 16)
-```
-
-![](repair_files/figure-html/unnamed-chunk-2-1.png) 
-
-```r
-cor(repair, use = "complete.obs")[2] #correllation coefficient
-```
-
-```
-## [1] 0.9936987
-```
-
-```r
-fit <- lm(minutes ~ units, data = repair)
-summary(fit)
-```
-
-```
-## 
-## Call:
-## lm(formula = minutes ~ units, data = repair)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -9.2318 -3.3415 -0.7143  4.7769  7.8033 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)    4.162      3.355    1.24    0.239    
-## units         15.509      0.505   30.71 8.92e-13 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 5.392 on 12 degrees of freedom
-##   (1 observation deleted due to missingness)
-## Multiple R-squared:  0.9874,	Adjusted R-squared:  0.9864 
-## F-statistic: 943.2 on 1 and 12 DF,  p-value: 8.916e-13
-```
-
-```r
-hist(residuals(fit), col = "green", freq = FALSE)
-```
-
-![](repair_files/figure-html/unnamed-chunk-2-2.png) 
-
+Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Residuals vs Leverage.
 
 
 ```r
 par(mfrow=c(2,2)) #setup your window to fit the next plots
-plot(fit)
+plot(m)
 ```
 
-![](repair_files/figure-html/unnamed-chunk-3-1.png) 
+![](repair_files/figure-html/unnamed-chunk-5-1.png) 
