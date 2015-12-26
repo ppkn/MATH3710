@@ -12,7 +12,12 @@ output:
 if (!require(psych))
         {install.packages("psych")
         library(psych, warn.conflicts = FALSE)
-        }
+}
+#note: to make this work on your machine you may need to install the 
+# psych package by typing into the console install.packages("psych")
+# the reason I'm using this package is that the describe function from it
+# produces output much like the SAS simple statistics output from the 
+# PROC CORR procedure.  
 ```
 
 Let's get started with R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
@@ -21,7 +26,8 @@ Let's get started with R.  This first data set is small so we have the data load
 units <- c(1,2,3,4,4,5,6,6,7,8,9,9,10,10,3)
 minutes <- c(23,29,49,64,74,87,96,97,109,119,149,145,154,166, NA)
 repair <- as.data.frame(cbind(units, minutes))
-head(repair)
+repair <- repair[complete.cases(repair), ] 
+# note, the above line removes missing values.
 describe(repair)
 ```
 
@@ -43,9 +49,23 @@ m <- lm(minutes ~ units, data = repair)
 legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
 ```
 
+Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
+
+```{r}
+anova(m) #ANOVA table
+summary(m) #summary of linear model
+```
+
+
+```{r}
+t <- cbind(repair, fitted.values(m), residuals(m))
+colnames(t) <- c("units", "observed", "predicted", "residuals")
+print(t)
+```
+
 Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Residuals vs Leverage.
 
 ```{r}
-par(mfrow=c(2,2)) #setup your window to fit the next plots
-plot(m)
+#par(mfrow=c(2,2)) #setup your window to fit the next plots
+#plot(m)
 ```
