@@ -2,9 +2,10 @@
 title: "Repairs"
 author: "Cody Frisby"
 date: "December 15, 2015"
-output: 
-  html_document: 
+output:
+  html_document:
     keep_md: yes
+  pdf_document: default
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -39,7 +40,7 @@ cor(repair, method = "pearson", use = "complete.obs")
 
 Now let's plot the data look at the variable minutes being modeled as a function of units.
 
-```{r, echo=FALSE}
+```{r}
 plot(minutes ~ units, data=repair, bg = "lightblue", 
      col = "black", cex = 1.5, pch = 21)
 #fit the least squares line to the plot.
@@ -58,8 +59,9 @@ summary(m) #summary of linear model
 
 
 ```{r}
-t <- cbind(repair, fitted.values(m), residuals(m))
-colnames(t) <- c("units", "observed", "predicted", "residuals")
+#to display observed and predicted data side by side.
+t <- cbind(repair$minutes, fitted.values(m), residuals(m))
+colnames(t) <- c("observed", "predicted", "residuals")
 print(t)
 ```
 
