@@ -68,6 +68,20 @@ print(t)
 Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Residuals vs Leverage.
 
 ```{r}
-#par(mfrow=c(2,2)) #setup your window to fit the next plots
-#plot(m)
+plot(m)
+```
+
+```{r}
+# To reprocude SAS PROC Univariate on variable rstandard from our model m.
+
+describe(rstandard(m))
+summary(rstandard(m))
+t.test(rstandard(m))
+```
+
+
+```{r}
+u <- cbind(t, rstandard(m))
+colnames(u) <- c("observed", "predicted", "residuals", "stdresid")
+print(u)
 ```

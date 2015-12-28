@@ -127,6 +127,74 @@ Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Res
 
 
 ```r
-#par(mfrow=c(2,2)) #setup your window to fit the next plots
-#plot(m)
+plot(m)
+```
+
+![](repair_files/figure-html/unnamed-chunk-7-1.png) ![](repair_files/figure-html/unnamed-chunk-7-2.png) ![](repair_files/figure-html/unnamed-chunk-7-3.png) ![](repair_files/figure-html/unnamed-chunk-7-4.png) 
+
+
+```r
+# To reprocude SAS PROC Univariate on variable rstandard from our model m.
+
+describe(rstandard(m))
+```
+
+```
+##   vars  n mean   sd median trimmed  mad   min  max range  skew kurtosis
+## 1    1 14    0 1.04  -0.14    0.03 1.36 -1.81 1.53  3.34 -0.06    -1.34
+##     se
+## 1 0.28
+```
+
+```r
+summary(rstandard(m))
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -1.81100 -0.64770 -0.13750  0.00326  0.95120  1.53100
+```
+
+```r
+t.test(rstandard(m))
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  rstandard(m)
+## t = 0.0117, df = 13, p-value = 0.9908
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  -0.5986728  0.6051926
+## sample estimates:
+##   mean of x 
+## 0.003259935
+```
+
+
+
+```r
+u <- cbind(t, rstandard(m))
+colnames(u) <- c("observed", "predicted", "residuals", "stdresid")
+print(u)
+```
+
+```
+##    observed predicted  residuals    stdresid
+## 1        23  19.67043  3.3295739  0.73325354
+## 2        29  35.17920 -6.1791980 -1.29086405
+## 3        49  50.68797 -1.6879699 -0.33964371
+## 4        64  66.19674 -2.1967419 -0.43103048
+## 5        74  66.19674  7.8032581  1.53110484
+## 6        87  81.70551  5.2944862  1.02388106
+## 7        96  97.21429 -1.2142857 -0.23371442
+## 8        97  97.21429 -0.2142857 -0.04124372
+## 9       109 112.72306 -3.7230576 -0.71998832
+## 10      119 128.23183 -9.2318296 -1.81140988
+## 11      149 143.74060  5.2593985  1.05826626
+## 12      145 143.74060  1.2593985  0.25340900
+## 13      154 159.24937 -5.2493734 -1.09661925
+## 14      166 159.24937  6.7506266  1.41023822
 ```
