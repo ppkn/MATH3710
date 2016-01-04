@@ -257,7 +257,7 @@ print(u)
 # to add this once I know how to calculate this value in R.
 ```
 
-# fit the least squares line to the plot.
-# abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
-# to display the R^2 value on the graph
-# legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+ fit the least squares line to the plot.
+ abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
+ to display the R^2 value on the graph
+ legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
