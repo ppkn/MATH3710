@@ -37,21 +37,19 @@ Above is a summary of the data table "repair".  Below is a table of the correlat
 cor(repair, method = "pearson", use = "complete.obs")
 ```
 
-Now let's plot the data look at the variable minutes being modeled as a function of units.
+Here's a scatter plot of the data.
 
 ```{r}
 plot(minutes ~ units, data=repair, bg = "lightblue", 
      col = "black", cex = 1.5, pch = 21)
-#fit the least squares line to the plot.
-abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
-m <- lm(minutes ~ units, data = repair)
-#to display the R^2 value on the graph
-legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+# bg, col, cex, pch are all arguments to the plot function. They only determine
+# how the plot appears.  
 ```
 
 Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
 
 ```{r}
+m <- lm(minutes ~ units, data = repair)
 anova(m) #ANOVA table
 summary(m) #summary of linear model
 ```
@@ -60,24 +58,57 @@ summary(m) #summary of linear model
 ```{r}
 #to display observed and predicted data side by side.
 t <- cbind(repair$minutes, fitted.values(m), residuals(m))
+# add confidnece intervals, and prediction intervals
 colnames(t) <- c("observed", "predicted", "residuals")
 print(t)
 ```
 
-Below is a plot of the residuals vs fitted, Normal Quantile, Scale-Location, Residuals vs Leverage.
+Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
 ```{r}
-plot(m)
+plot(m, which = c(1,2))
+# the which argument in the plot function chooses the first two plots from the m model.
+# the plot(m) call produces at least four plots.  We are only interested in the first 
+# two at the moment.  
 ```
+
+Now to plot a histogram of the residuals from our model.
+SAS code: 
+/*Plot Histogram of Residuals */
+proc univariate data=diagnostic;
+	var stdresid;
+	histogram stdresid/normal(mu=est sigma=est color=red)
+						midpoints = -3 -2 -1 0 1 2 3;
+	title 'Histogram of residuals'; run;
+run;
+
+```{r}
+if (!require(ggplot2))
+        {install.packages("ggplot2")
+        library(ggplot2, warn.conflicts = FALSE)
+}
+x <- rstandard(m)
+qplot(x, bins = 3, xlab = "Standard Residuals", 
+      main = "Histogram of Standard Residuals", fill = I("light blue"), 
+      colour = I("black"))
+```
+
 
 ```{r}
 # To reprocude SAS PROC Univariate on variable rstandard from our model m.
-
 describe(rstandard(m))
 summary(rstandard(m))
 t.test(rstandard(m))
 ```
 
+The below code reproduces the SAS output:
+_(/* Computing normal scores for QQ plot or Gauss-Rankit Plot */
+proc rank normal=blom data=diagnostic out=newdata;
+	var stdresid;
+	ranks nscores;
+proc print data = newdata;)
+	title 'normal scores'; run;_
+Except for nscores. 
 
 ```{r}
 u <- cbind(t, rstandard(m), hatvalues(m))
@@ -86,3 +117,8 @@ print(u)
 # I'm not yet sure what the "nscores" value is from the SAS output.  Will need
 # to add this once I know how to calculate this value in R.
 ```
+
+# fit the least squares line to the plot.
+# abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
+# to display the R^2 value on the graph
+# legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
