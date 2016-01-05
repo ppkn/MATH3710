@@ -20,7 +20,7 @@ if (!require(psych))
 # PROC CORR procedure.  
 ```
 
-Let's get started with R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
+Let's get started with simple linear regression using R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
 
 ```{r}
 units <- c(1,2,3,4,4,5,6,6,7,8,9,9,10,10,3)
@@ -39,7 +39,7 @@ cor(repair, method = "pearson", use = "complete.obs")
 
 Here's a scatter plot of the data.
 
-```{r}
+```{r, echo = FALSE}
 plot(minutes ~ units, data=repair, bg = "lightblue", 
      col = "black", cex = 1.5, pch = 21)
 # bg, col, cex, pch are all arguments to the plot function. They only determine
@@ -65,7 +65,7 @@ print(t)
 
 Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
-```{r}
+```{r, echo=FALSE}
 plot(m, which = c(1,2))
 # the which argument in the plot function chooses the first two plots from the m model.
 # the plot(m) call produces at least four plots.  We are only interested in the first 
@@ -82,20 +82,24 @@ proc univariate data=diagnostic;
 	title 'Histogram of residuals'; run;
 run;
 
-```{r}
+```{r, echo = FALSE, message = FALSE}
+#to hide from the md finte from Knit.
 if (!require(ggplot2))
         {install.packages("ggplot2")
         library(ggplot2, warn.conflicts = FALSE)
 }
+```
+
+```{r, echo=FALSE}
 x <- rstandard(m)
 qplot(x, bins = 3, xlab = "Standard Residuals", 
       main = "Histogram of Standard Residuals", fill = I("light blue"), 
       colour = I("black"))
 ```
 
-Or we can plot the residuals this way.
+Or we can plot the residuals this way, using ggplot.
 
-```{r}
+```{r, echo = FALSE}
 df <- data.frame(cbind(t, rstandard = rstandard(m)))
 gg <- ggplot(df, aes(x = rstandard))
 gg <- gg + geom_histogram(binwidth=0.75, colour="black", 
@@ -114,6 +118,11 @@ gg
 describe(rstandard(m))
 summary(rstandard(m))
 t.test(rstandard(m))
+
+#or, using base R
+x <- rstandard(m)
+c(sd(x), summary(x), var(x))
+
 ```
 
 The below code reproduces the SAS output:
@@ -133,7 +142,10 @@ print(u)
 # to add this once I know how to calculate this value in R.
 ```
 
- fit the least squares line to the plot.
- abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
- to display the R^2 value on the graph
- legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+
+```{r, echo=FALSE}
+# fit the least squares line to the plot.
+# abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
+# to display the R^2 value on the graph
+# legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+```

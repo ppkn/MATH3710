@@ -4,7 +4,7 @@ December 15, 2015
 
 
 
-Let's get started with R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
+Let's get started with simple linear regression using R.  This first data set is small so we have the data loaded into two variables: minutes and units.  We then put them together with the cbind function and store the result in a new variable called repair.
 
 
 ```r
@@ -40,18 +40,7 @@ cor(repair, method = "pearson", use = "complete.obs")
 
 Here's a scatter plot of the data.
 
-
-```r
-plot(minutes ~ units, data=repair, bg = "lightblue", 
-     col = "black", cex = 1.5, pch = 21)
-```
-
 ![](repair_files/figure-html/unnamed-chunk-4-1.png) 
-
-```r
-# bg, col, cex, pch are all arguments to the plot function. They only determine
-# how the plot appears.  
-```
 
 Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
 
@@ -127,18 +116,7 @@ print(t)
 
 Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
-
-```r
-plot(m, which = c(1,2))
-```
-
 ![](repair_files/figure-html/unnamed-chunk-7-1.png) ![](repair_files/figure-html/unnamed-chunk-7-2.png) 
-
-```r
-# the which argument in the plot function chooses the first two plots from the m model.
-# the plot(m) call produces at least four plots.  We are only interested in the first 
-# two at the moment.  
-```
 
 Now to plot a histogram of the residuals from our model.
 SAS code: 
@@ -151,49 +129,12 @@ proc univariate data=diagnostic;
 run;
 
 
-```r
-if (!require(ggplot2))
-        {install.packages("ggplot2")
-        library(ggplot2, warn.conflicts = FALSE)
-}
-```
-
-```
-## Loading required package: ggplot2
-## 
-## Attaching package: 'ggplot2'
-## 
-## The following objects are masked from 'package:psych':
-## 
-##     %+%, alpha
-```
-
-```r
-x <- rstandard(m)
-qplot(x, bins = 3, xlab = "Standard Residuals", 
-      main = "Histogram of Standard Residuals", fill = I("light blue"), 
-      colour = I("black"))
-```
-
-![](repair_files/figure-html/unnamed-chunk-8-1.png) 
-
-Or we can plot the residuals this way.
-
-
-```r
-df <- data.frame(cbind(t, rstandard = rstandard(m)))
-gg <- ggplot(df, aes(x = rstandard))
-gg <- gg + geom_histogram(binwidth=0.75, colour="black", 
-                          aes(y=..density.., fill=..count..))
-gg <- gg + scale_fill_gradient("Count", low="#DCDCDC", high="#7C7C7C")
-gg <- gg + stat_function(fun=dnorm, color="red",
-                         arg = list(mean = mean(df$rstandard), 
-                                    sd = sd(df$rstandard)))
-gg <- gg + ggtitle("Histogram of Standard Residuals")
-gg
-```
 
 ![](repair_files/figure-html/unnamed-chunk-9-1.png) 
+
+Or we can plot the residuals this way, using ggplot.
+
+![](repair_files/figure-html/unnamed-chunk-10-1.png) 
 
 
 
@@ -236,6 +177,19 @@ t.test(rstandard(m))
 ## 0.003259935
 ```
 
+```r
+#or, using base R
+x <- rstandard(m)
+c(sd(x), summary(x), var(x))
+```
+
+```
+##                Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##  1.042519 -1.811000 -0.647700 -0.137500  0.003260  0.951200  1.531000 
+##           
+##  1.086846
+```
+
 The below code reproduces the SAS output:
 _(/* Computing normal scores for QQ plot or Gauss-Rankit Plot */
 proc rank normal=blom data=diagnostic out=newdata;
@@ -275,7 +229,5 @@ print(u)
 # to add this once I know how to calculate this value in R.
 ```
 
- fit the least squares line to the plot.
- abline(lm(minutes ~ units, data = repair), lwd = 1, col = "red")
- to display the R^2 value on the graph
- legend("topleft", bty = "n", legend = paste("R^2 =", format(summary(m)$adj.r.squared, digits = 4)))
+
+
