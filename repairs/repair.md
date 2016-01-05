@@ -177,6 +177,24 @@ qplot(x, bins = 3, xlab = "Standard Residuals",
 
 ![](repair_files/figure-html/unnamed-chunk-8-1.png) 
 
+Or we can plot the residuals this way.
+
+
+```r
+df <- data.frame(cbind(t, rstandard = rstandard(m)))
+gg <- ggplot(df, aes(x = rstandard))
+gg <- gg + geom_histogram(binwidth=0.75, colour="black", 
+                          aes(y=..density.., fill=..count..))
+gg <- gg + scale_fill_gradient("Count", low="#DCDCDC", high="#7C7C7C")
+gg <- gg + stat_function(fun=dnorm, color="red",
+                         arg = list(mean = mean(df$rstandard), 
+                                    sd = sd(df$rstandard)))
+gg <- gg + ggtitle("Histogram of Standard Residuals")
+gg
+```
+
+![](repair_files/figure-html/unnamed-chunk-9-1.png) 
+
 
 
 ```r
