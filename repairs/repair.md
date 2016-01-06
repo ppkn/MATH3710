@@ -1,6 +1,6 @@
-# Repairs
-Cody Frisby  
-December 15, 2015  
+# Computer Repairs
+ccfrisby  
+January 4, 2016  
 
 
 
@@ -87,19 +87,20 @@ summary(m) #summary of linear model
 ## F-statistic: 943.2 on 1 and 12 DF,  p-value: 8.916e-13
 ```
 
-
+Here we attempt to reproduce some of the output from the Proc Reg command in SAS.
 
 ```r
-# add confidnece intervals, and prediction intervals
+# add confidnece intervals
 p <- predict.lm(m, se.fit = T, interval = "confidence")
 psub <- p$fit[,2:3]
 colnames(psub) <- c("95% Conf Lower", "95% Conf Upper")
 s <- cbind(psub, stderror = p$se.fit)
-#to display observed and predicted data side by side.
+# still need to add prediction intervals
+# cbind is the commmand that binds columns together in either a 
+# data frame or matrix.
 t <- cbind(repair$minutes, fitted.values(m), residuals(m))
 colnames(t) <- c("observed", "predicted", "residuals")
-v <- cbind(t, s)
-print(v)
+cbind(t, s)
 ```
 
 ```
