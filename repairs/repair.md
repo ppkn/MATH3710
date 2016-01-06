@@ -42,6 +42,7 @@ Here's a scatter plot of the data.
 
 ![](repair_files/figure-html/unnamed-chunk-4-1.png) 
 
+
 Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
 
 
@@ -89,34 +90,41 @@ summary(m) #summary of linear model
 
 
 ```r
+# add confidnece intervals, and prediction intervals
+p <- predict.lm(m, se.fit = T, interval = "confidence")
+psub <- p$fit[,2:3]
+colnames(psub) <- c("95% Conf Lower", "95% Conf Upper")
+s <- cbind(psub, stderror = p$se.fit)
 #to display observed and predicted data side by side.
 t <- cbind(repair$minutes, fitted.values(m), residuals(m))
-# add confidnece intervals, and prediction intervals
 colnames(t) <- c("observed", "predicted", "residuals")
-print(t)
+v <- cbind(t, s)
+print(v)
 ```
 
 ```
-##    observed predicted  residuals
-## 1        23  19.67043  3.3295739
-## 2        29  35.17920 -6.1791980
-## 3        49  50.68797 -1.6879699
-## 4        64  66.19674 -2.1967419
-## 5        74  66.19674  7.8032581
-## 6        87  81.70551  5.2944862
-## 7        96  97.21429 -1.2142857
-## 8        97  97.21429 -0.2142857
-## 9       109 112.72306 -3.7230576
-## 10      119 128.23183 -9.2318296
-## 11      149 143.74060  5.2593985
-## 12      145 143.74060  1.2593985
-## 13      154 159.24937 -5.2493734
-## 14      166 159.24937  6.7506266
+##    observed predicted  residuals 95% Conf Lower 95% Conf Upper stderror
+## 1        23  19.67043  3.3295739       13.33625       26.00460 2.907169
+## 2        29  35.17920 -6.1791980       29.77303       40.58537 2.481245
+## 3        49  50.68797 -1.6879699       46.13246       55.24348 2.090821
+## 4        64  66.19674 -2.1967419       62.36271       70.03077 1.759688
+## 5        74  66.19674  7.8032581       62.36271       70.03077 1.759688
+## 6        87  81.70551  5.2944862       78.37864       85.03239 1.526920
+## 7        96  97.21429 -1.2142857       94.07462      100.35395 1.440999
+## 8        97  97.21429 -0.2142857       94.07462      100.35395 1.440999
+## 9       109 112.72306 -3.7230576      109.39618      116.04993 1.526920
+## 10      119 128.23183 -9.2318296      124.39780      132.06586 1.759688
+## 11      149 143.74060  5.2593985      139.18509      148.29611 2.090821
+## 12      145 143.74060  1.2593985      139.18509      148.29611 2.090821
+## 13      154 159.24937 -5.2493734      153.84321      164.65554 2.481245
+## 14      166 159.24937  6.7506266      153.84321      164.65554 2.481245
 ```
+
 
 Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
 ![](repair_files/figure-html/unnamed-chunk-7-1.png) ![](repair_files/figure-html/unnamed-chunk-7-2.png) 
+
 
 Now to plot a histogram of the residuals from our model.
 SAS code: 
@@ -132,6 +140,7 @@ run;
 
 ![](repair_files/figure-html/unnamed-chunk-9-1.png) 
 
+
 Or we can plot the residuals this way, using ggplot.
 
 ![](repair_files/figure-html/unnamed-chunk-10-1.png) 
@@ -140,7 +149,7 @@ Or we can plot the residuals this way, using ggplot.
 
 ```r
 # To reprocude SAS PROC Univariate on variable rstandard from our model m.
-describe(rstandard(m))
+describe(rstandard(m)) #this is using the library psych
 ```
 
 ```
@@ -148,15 +157,6 @@ describe(rstandard(m))
 ## 1    1 14    0 1.04  -0.14    0.03 1.36 -1.81 1.53  3.34 -0.06    -1.34
 ##     se
 ## 1 0.28
-```
-
-```r
-summary(rstandard(m))
-```
-
-```
-##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-## -1.81100 -0.64770 -0.13750  0.00326  0.95120  1.53100
 ```
 
 ```r
@@ -180,14 +180,36 @@ t.test(rstandard(m))
 ```r
 #or, using base R
 x <- rstandard(m)
-c(sd(x), summary(x), var(x))
+mean(x)
 ```
 
 ```
-##                Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-##  1.042519 -1.811000 -0.647700 -0.137500  0.003260  0.951200  1.531000 
-##           
-##  1.086846
+## [1] 0.003259935
+```
+
+```r
+sd(x) 
+```
+
+```
+## [1] 1.042519
+```
+
+```r
+summary(x) 
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -1.81100 -0.64770 -0.13750  0.00326  0.95120  1.53100
+```
+
+```r
+var(x)
+```
+
+```
+## [1] 1.086846
 ```
 
 The below code reproduces the SAS output:
@@ -225,8 +247,9 @@ print(u)
 ```
 
 ```r
-# I'm not yet sure what the "nscores" value is from the SAS output.  Will need
-# to add this once I know how to calculate this value in R.
+# confidence intervals and se values can be obtained in R by using
+# predict.lm(m, se.fit = T, interval = "confidence")
+# 
 ```
 
 

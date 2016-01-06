@@ -46,6 +46,7 @@ plot(minutes ~ units, data=repair, bg = "lightblue",
 # how the plot appears.  
 ```
 
+
 Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
 
 ```{r}
@@ -56,12 +57,18 @@ summary(m) #summary of linear model
 
 
 ```{r}
+# add confidnece intervals, and prediction intervals
+p <- predict.lm(m, se.fit = T, interval = "confidence")
+psub <- p$fit[,2:3]
+colnames(psub) <- c("95% Conf Lower", "95% Conf Upper")
+s <- cbind(psub, stderror = p$se.fit)
 #to display observed and predicted data side by side.
 t <- cbind(repair$minutes, fitted.values(m), residuals(m))
-# add confidnece intervals, and prediction intervals
 colnames(t) <- c("observed", "predicted", "residuals")
-print(t)
+v <- cbind(t, s)
+print(v)
 ```
+
 
 Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
@@ -71,6 +78,7 @@ plot(m, which = c(1,2))
 # the plot(m) call produces at least four plots.  We are only interested in the first 
 # two at the moment.  
 ```
+
 
 Now to plot a histogram of the residuals from our model.
 SAS code: 
@@ -97,6 +105,7 @@ qplot(x, bins = 3, xlab = "Standard Residuals",
       colour = I("black"))
 ```
 
+
 Or we can plot the residuals this way, using ggplot.
 
 ```{r, echo = FALSE}
@@ -115,14 +124,14 @@ gg
 
 ```{r}
 # To reprocude SAS PROC Univariate on variable rstandard from our model m.
-describe(rstandard(m))
-summary(rstandard(m))
+describe(rstandard(m)) #this is using the library psych
 t.test(rstandard(m))
-
 #or, using base R
 x <- rstandard(m)
-c(sd(x), summary(x), var(x))
-
+mean(x)
+sd(x) 
+summary(x) 
+var(x)
 ```
 
 The below code reproduces the SAS output:
@@ -138,8 +147,10 @@ Except for nscores.
 u <- cbind(t, rstandard(m), hatvalues(m))
 colnames(u) <- c("observed", "predicted", "residuals", "stdresid", "hatvals")
 print(u)
-# I'm not yet sure what the "nscores" value is from the SAS output.  Will need
-# to add this once I know how to calculate this value in R.
+# confidence intervals and se values can be obtained in R by using
+# predict.lm(m, se.fit = T, interval = "confidence")
+# 
+
 ```
 
 
