@@ -82,14 +82,6 @@ plot(m, which = c(1,2))
 
 
 Now to plot a histogram of the residuals from our model.
-SAS code: 
-/*Plot Histogram of Residuals */
-proc univariate data=diagnostic;
-	var stdresid;
-	histogram stdresid/normal(mu=est sigma=est color=red)
-						midpoints = -3 -2 -1 0 1 2 3;
-	title 'Histogram of residuals'; run;
-run;
 
 ```{r, echo = FALSE, message = FALSE}
 #to hide from the md finte from Knit.
@@ -122,9 +114,8 @@ gg <- gg + ggtitle("Histogram of Standard Residuals")
 gg
 ```
 
-
+Here we attempt to reproduce the same output as the Proc Univariate command in SAS.  Here the variable of interest is from our model m, rstandard.  
 ```{r}
-# To reprocude SAS PROC Univariate on variable rstandard from our model m.
 describe(rstandard(m)) #this is using the library psych
 t.test(rstandard(m))
 #or, using base R
@@ -135,22 +126,13 @@ summary(x)
 var(x)
 ```
 
-The below code reproduces the SAS output:
-_(/* Computing normal scores for QQ plot or Gauss-Rankit Plot */
-proc rank normal=blom data=diagnostic out=newdata;
-	var stdresid;
-	ranks nscores;
-proc print data = newdata;)
-	title 'normal scores'; run;_
-Except for nscores. 
-
 ```{r}
 u <- cbind(t, rstandard(m), hatvalues(m))
 colnames(u) <- c("observed", "predicted", "residuals", "stdresid", "hatvals")
 print(u)
 # confidence intervals and se values can be obtained in R by using
 # predict.lm(m, se.fit = T, interval = "confidence")
-# 
+# where m is your fitted model. 
 
 ```
 

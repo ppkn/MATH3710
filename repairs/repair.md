@@ -128,14 +128,6 @@ Below is a plot of the residuals vs fitted and the Normal Quantile plot.
 
 
 Now to plot a histogram of the residuals from our model.
-SAS code: 
-/*Plot Histogram of Residuals */
-proc univariate data=diagnostic;
-	var stdresid;
-	histogram stdresid/normal(mu=est sigma=est color=red)
-						midpoints = -3 -2 -1 0 1 2 3;
-	title 'Histogram of residuals'; run;
-run;
 
 
 
@@ -146,10 +138,9 @@ Or we can plot the residuals this way, using ggplot.
 
 ![](repair_files/figure-html/unnamed-chunk-10-1.png) 
 
-
+Here we attempt to reproduce the same output as the Proc Univariate command in SAS.  Here the variable of interest is from our model m, rstandard.  
 
 ```r
-# To reprocude SAS PROC Univariate on variable rstandard from our model m.
 describe(rstandard(m)) #this is using the library psych
 ```
 
