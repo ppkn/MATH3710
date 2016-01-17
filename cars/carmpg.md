@@ -113,8 +113,8 @@ One more plot.  Here we will look at a histogram of the residuals.
 
 
 ```r
-hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-4,4), main = "Histogram of Standardized Residuals", xlab = "rstandard")
+hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-4,4), 
+     main = "Histogram of Standardized Residuals", xlab = "rstandard")
 ```
 
 ![](carmpg_files/figure-html/unnamed-chunk-6-1.png)\
-
