@@ -1,0 +1,63 @@
+---
+title: "Car MPG"
+author: "ccf"
+date: "January 17, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+This is an R markdown file for the car mpg data shown in class.  We will reporduce some of the SAS output using R and Rstudio.
+
+First we need to read the data into R.
+
+```{r}
+carmpg <- read.table("~/Documents/MATH3710/cars/MPGData.txt", header = TRUE)
+summary(carmpg)
+cor(carmpg)
+```
+
+
+Above are simple summary statistics of the data.
+
+Now let's look at a scatter plot of the data.
+
+```{r}
+plot(MPG ~ Weight, data=carmpg, bg = "lightblue", 
+     col = "black", cex = 1.5, pch = 21)
+text(x=1800, y=15, paste0("Cor = ",round(cor(carmpg)[2], 4), cex = 0.7))
+```
+
+
+Now we fit a linear model in R using the lm function. We will store it in a variable for more use.
+
+```{r}
+fit <- lm(MPG ~ Weight, data = carmpg)
+summary(fit) # displays a summary of the model.
+```
+
+
+Now we will use R to check the assumptions of the model. First we will store the standardized residuals from "fit" and store them in a variable.
+
+```{r}
+e <- rstandard(fit)
+summary(e)
+```
+
+More diagnostic plots of our model:
+```{r}
+qqnorm(e)
+qqline(e)
+# Residuals vs. x
+x <- carmpg$Weight
+plot(x, e, bg = "lightblue", 
+     col = "black", cex = 1.1, pch = 21,frame = FALSE)
+abline(h = 0, lwd = 2)
+```
+
+One more plot.  Here we will look at a histogram of the residuals.
+
+```{r}
+hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-4,4), main = "Histogram of Standardized Residuals", xlab = "rstandard")
+```
+

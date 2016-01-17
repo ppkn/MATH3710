@@ -5,6 +5,7 @@ date: "January 4, 2016"
 output:
   html_document:
     keep_md: yes
+  pdf_document: default
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -81,7 +82,15 @@ plot(m, which = c(1,2))
 ```
 
 
-Now to plot a histogram of the residuals from our model.
+Now to plot a histogram of the residuals from our model.  We will do this three different ways for R illustration purposes.
+
+```{r, echo = FALSE}
+x <- rstandard(m)
+hist(x, col = "green", freq = FALSE, xlim = c(-3,3), main = "Histogram of 
+     Standardized Residuals", xlab = "rstandard")
+curve(dnorm(x, mean(x), sd(x)), col = 2, add = TRUE, 
+      from = quantile(x, 0.025), to = quantile(x, 0.975))
+```
 
 ```{r, echo = FALSE, message = FALSE}
 #to hide from the md finte from Knit.

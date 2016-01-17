@@ -40,7 +40,7 @@ cor(repair, method = "pearson", use = "complete.obs")
 
 Here's a scatter plot of the data.
 
-![](repair_files/figure-html/unnamed-chunk-4-1.png) 
+![](repair_files/figure-html/unnamed-chunk-4-1.png)\
 
 
 Now to display a summary of the model.  Above we fit a model with minutes being function of units.  We stored this model in a variable called m.
@@ -124,19 +124,21 @@ cbind(t, s)
 
 Below is a plot of the residuals vs fitted and the Normal Quantile plot.  
 
-![](repair_files/figure-html/unnamed-chunk-7-1.png) ![](repair_files/figure-html/unnamed-chunk-7-2.png) 
+![](repair_files/figure-html/unnamed-chunk-7-1.png)\![](repair_files/figure-html/unnamed-chunk-7-2.png)\
 
 
-Now to plot a histogram of the residuals from our model.
+Now to plot a histogram of the residuals from our model.  We will do this three different ways for R illustration purposes.
+
+![](repair_files/figure-html/unnamed-chunk-8-1.png)\
 
 
 
-![](repair_files/figure-html/unnamed-chunk-9-1.png) 
+![](repair_files/figure-html/unnamed-chunk-10-1.png)\
 
 
 Or we can plot the residuals this way, using ggplot.
 
-![](repair_files/figure-html/unnamed-chunk-10-1.png) 
+![](repair_files/figure-html/unnamed-chunk-11-1.png)\
 
 Here we attempt to reproduce the same output as the Proc Univariate command in SAS.  Here the variable of interest is from our model m, rstandard.  
 
@@ -204,15 +206,6 @@ var(x)
 ## [1] 1.086846
 ```
 
-The below code reproduces the SAS output:
-_(/* Computing normal scores for QQ plot or Gauss-Rankit Plot */
-proc rank normal=blom data=diagnostic out=newdata;
-	var stdresid;
-	ranks nscores;
-proc print data = newdata;)
-	title 'normal scores'; run;_
-Except for nscores. 
-
 
 ```r
 u <- cbind(t, rstandard(m), hatvalues(m))
@@ -241,7 +234,7 @@ print(u)
 ```r
 # confidence intervals and se values can be obtained in R by using
 # predict.lm(m, se.fit = T, interval = "confidence")
-# 
+# where m is your fitted model. 
 ```
 
 

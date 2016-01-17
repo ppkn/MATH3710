@@ -41,5 +41,9 @@ plot(m, which = c(1,2))
 # two at the moment.  You will have to hit enter in the console to view these two
 # plots.
 
-
-
+# to look at a histogram of the standardized residuals from our model.
+x <- rstandard(m)
+hist(x, col = "green", freq = FALSE, xlim = c(-3,3), main = "Histogram of 
+     Standardized Residuals", xlab = "rstandard")
+curve(dnorm(x, mean(x), sd(x)), col = 2, add = TRUE, 
+      from = quantile(x, 0.025), to = quantile(x, 0.975))
