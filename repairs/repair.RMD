@@ -89,7 +89,7 @@ x <- rstandard(m)
 hist(x, col = "green", freq = FALSE, xlim = c(-3,3), main = "Histogram of 
      Standardized Residuals", xlab = "rstandard")
 curve(dnorm(x, mean(x), sd(x)), col = 2, add = TRUE, 
-      from = quantile(x, 0.025), to = quantile(x, 0.975))
+      from = quantile(x, 0.001), to = quantile(x, 0.999))
 ```
 
 ```{r, echo = FALSE, message = FALSE}
