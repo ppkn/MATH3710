@@ -1,0 +1,74 @@
+---
+title: "Climate Change"
+author: "ccf"
+date: "January 20, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+This is an R Markdwon (Rmd) file for the climate change data shared in class.  We will attempt to translate some of the SAS code into R.
+
+```{r}
+climate <- read.table("~/Documents/MATH3710/climate/Climate.txt", header = TRUE)
+climate$co2_cent <- climate$co2 - mean(climate$co2)
+```
+
+
+Above are simple summary statistics of the data.
+
+Now let's look at a scatter plot of the data.
+
+```{r}
+plot(globaltemp ~ co2, data = climate, bg = "lightblue", 
+     col = "black", cex = 1.5, pch = 21)
+```
+
+
+Now we fit a linear model in R using the lm function. We will store it in a variable for more use.
+
+```{r}
+fit <- lm(globaltemp ~ co2, data = climate)
+summary(fit) # displays a summary of the model.
+```
+
+Here we will plot the data with confidence intervals too.  This is quite involved in R so the code is quite long.
+
+```{r}
+x <- climate$co2
+y <- climate$globaltemp
+plot(y~x,type="n")
+m <- lm(y~x)
+wx <- par("usr")[1:2]
+new.x <- seq(wx[1],wx[2],len=100)
+pred <- predict(m, new=data.frame(x=new.x), interval="conf")
+lines(new.x,pred[,"fit"],lwd=2)
+lines(new.x,pred[,"lwr"],lty=3)
+lines(new.x,pred[,"upr"],lty=3)
+points(x,y,pch=16,col="steelblue")
+# now to add the prediction intervals
+predp <- predict(m, new=data.frame(x=new.x), interval = "pred")
+lines(new.x, predp[,"lwr"], lty=2)
+lines(new.x, predp[,"upr"], lty=2)
+title(main="Fit Plot for Temp")
+```
+
+
+Now we will use R to check the assumptions of the model. First we will store the standardized residuals from "fit" and store them in a variable.
+
+```{r}
+e <- rstandard(fit)
+summary(e)
+# plot residuals by co2
+plot(climate$co2, e, bg = "lightblue", col = "black", pch = 21,
+     xlab = "Co2", ylab = "Residuals", main = "Residuals vs Co2")
+abline(h=0)
+```
+
+More diagnostic plots of our model residuals:
+```{r}
+qqnorm(e)
+qqline(e)
+hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-4,4), 
+     main = "Histogram of Standardized Residuals", xlab = "rstandard")
+```
