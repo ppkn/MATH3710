@@ -110,7 +110,7 @@ qqline(e)
 ![](climate_files/figure-html/unnamed-chunk-6-1.png)\
 
 ```r
-hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-4,4), 
+hist(e, breaks = 25, col = "green", freq = FALSE, xlim = c(-3,3), 
      main = "Histogram of Standardized Residuals", xlab = "rstandard")
 ```
 
